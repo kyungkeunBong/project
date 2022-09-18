@@ -1,4 +1,4 @@
-package com.kakaobank.blog.Controller;
+package com.kakaobank.blog.controller;
 
 import java.text.ParseException;
 
