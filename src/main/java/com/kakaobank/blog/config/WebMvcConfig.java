@@ -17,6 +17,6 @@ public class WebMvcConfig implements WebMvcConfigurer{
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(headerInterceptor)
 		.addPathPatterns("/rest/blog-service/**")
-		.excludePathPatterns("/rest/blog-service/keyword/*");				
+		.excludePathPatterns("/rest/blog-service/keyword/top");				
 	}
 }

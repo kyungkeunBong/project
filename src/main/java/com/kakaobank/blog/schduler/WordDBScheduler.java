@@ -20,7 +20,9 @@ public class WordDBScheduler {
 	public String getPartitionCode() {
 		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+9"));
 		calendar.setTimeInMillis(new Date().getTime());
-		return String.valueOf(calendar.get(Calendar.DAY_OF_WEEK));
+		int date = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+		if(date == -1) {date = 6;}
+		return String.valueOf(date);
 	}
 	
 	@PostConstruct

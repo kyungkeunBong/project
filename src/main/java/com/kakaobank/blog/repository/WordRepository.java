@@ -10,10 +10,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.kakaobank.blog.entity.Word;
+import com.kakaobank.blog.entity.Keyword;
 
 @Repository
-public interface WordRepository extends JpaRepository<Word, Long>{
+public interface WordRepository extends JpaRepository<Keyword, Long>{
 	@Query(value = 
 			"select keyword, count(keyword) as count" 
 			+ " from word" 

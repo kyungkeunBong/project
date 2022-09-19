@@ -9,4 +9,5 @@ import lombok.ToString;
 @ToString
 public class CommonRequestVO{	
 	private String restApiKey; 
+	private String naverId;
 }

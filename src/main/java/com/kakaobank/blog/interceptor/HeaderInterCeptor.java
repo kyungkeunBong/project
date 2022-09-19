@@ -18,18 +18,9 @@ public class HeaderInterCeptor implements HandlerInterceptor{
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws CommonException, Exception {
     	// 헤더 restApiKey 체크
-		String apiKey = "";
-		if(request.getHeader(HeaderValues.HEADER_KEY) != null){
-			apiKey = request.getHeader(HeaderValues.HEADER_KEY).split(HeaderValues.HEADER_KEY_PREVALUE)[1];
-		}else {
-			// 테스트용 임시코드
-			apiKey = RestApiKeys.KAKAO_REST_API_KEY;
-		}
-		
-        if (apiKey != null) {
-        	System.out.println("Header Input HEADER_AUTH : " + apiKey);
-        	request.setAttribute(HeaderValues.HEADER_KEY, RestApiKeys.KAKAO_REST_API_KEY);
-            return true;
+		System.out.println("##### interceptror start ");
+        if (request.getHeader(HeaderValues.HEADER_KEY).split(HeaderValues.HEADER_KEY_PREVALUE)[1] != null) {
+        	return true;
         }else {
           response.sendError(401,ErrorCodeEnum.KAKAO_REST_API_KEY_ERROR.getDescription());
           response.setStatus(401);

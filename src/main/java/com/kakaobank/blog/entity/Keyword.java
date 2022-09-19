@@ -22,20 +22,20 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name="word")
-public class Word {
+public class Keyword {
 	@Id
-	@Column(name="word_id")
-    private Long word_id;
-	@Column(name="word")
-    private String word;
+	@Column(name="keyword_id")
+    private Long keyword_id;
+	@Column(name="keyword")
+    private String keyword;
 	@Transient
 	@Column(name="partitioncode")
     private String partitioncode;
     
     @Builder
-    public Word(Long word_id, String word, String partitionCd) {
-        this.word_id = word_id;
-        this.word = word;
+    public Keyword(Long keyword_id, String keyword, String partitioncode) {
+        this.keyword_id = keyword_id;
+        this.keyword = keyword;
         this.partitioncode = partitioncode;
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.kakaobank.blog.common.Constants.HeaderValues;
+import com.kakaobank.blog.common.Constants.RestApiHost;
 import com.kakaobank.blog.common.Constants.ServiceUris;
 import com.kakaobank.blog.exception.CommonException;
 import com.kakaobank.blog.service.BlogService;
@@ -32,9 +33,20 @@ public class BlogController {
 			@RequestParam(required = false) String size,
 			HttpServletRequest httpRequest) throws CommonException , ParseException, Exception{
 		
+		BlogResponseVO responseVO = blogService.searchBlog(setRequest(query, sort, page, size, httpRequest));
+		System.out.println("## response : " + responseVO.toString());
+		return responseVO;
+	}
+
+	private BlogRequestVO setRequest(String query, String sort, String page, String size,
+			HttpServletRequest httpRequest) {
 		BlogRequestVO request = new BlogRequestVO();
-		request.setRestApiKey(httpRequest.getAttribute(HeaderValues.HEADER_KEY).toString());
+		request.setRestApiKey(httpRequest.getHeader(HeaderValues.HEADER_KEY).toString());
 		
+		if(httpRequest.getHeader(RestApiHost.NAVER_ID) != null) {
+			// 강제 네이버 조회
+			request.setNaverId(httpRequest.getHeader(RestApiHost.NAVER_ID).toString());
+		}
 		// requestParam 으로 들어온값 세팅
 		if(query != null) {
 			request.setQuery(query);
@@ -48,14 +60,12 @@ public class BlogController {
 		if(size !=null ) {
 			request.setSize(Integer.parseInt(size));
 		}
-		
-		BlogResponseVO responseVO = blogService.searchBlog(request);
-		System.out.println("## response : " + responseVO.toString());
-		return responseVO;
+		return request;
 	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = ServiceUris.KEYWORD_TOPTEN)
 	public KeywordResponseVO keywordTop() {
+		System.out.println("############# start keywordTop");
 		KeywordResponseVO responseVO = blogService.keywordTop();
 		return responseVO;
 	}

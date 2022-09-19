@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.kakaobank.blog.common.ErrorCodeEnum;
 import com.kakaobank.blog.connector.Connector;
+import com.kakaobank.blog.dto.KeywordDto;
 import com.kakaobank.blog.exception.CommonException;
 import com.kakaobank.blog.repository.KeywordTopten;
 import com.kakaobank.blog.repository.WordRepository;
@@ -35,10 +36,18 @@ public class BlogServiceImpl implements BlogService{
 	
 	@Override
 	public KeywordResponseVO keywordTop(){
-		List<KeywordTopten> keyword = wr.findToptenKeyword();
-		
+		List<KeywordTopten> keywords = wr.findToptenKeyword();
+		System.out.println("########## db find");
 		KeywordResponseVO response = new KeywordResponseVO();
-		response.setKeywords(keyword);
+		System.out.println("########## db find " + keywords.toString());
+		List<KeywordDto> resultList = new ArrayList<>();
+		KeywordDto result = new KeywordDto();
+		for(KeywordTopten keyword : keywords) {
+			result.setCount(keyword.getCount());
+			result.setKeyword(keyword.getKeyword());
+			resultList.add(result);
+		}
+		response.setKeywords(resultList);
 		return response;
 	}
 	
@@ -71,12 +80,20 @@ public class BlogServiceImpl implements BlogService{
 		BlogResponseVO response = new BlogResponseVO();
 		
 		try {
+			if(requestBody.getNaverId() != null) {
+				throw new CommonException(ErrorCodeEnum.KAKAO_SERVER_ERROR);
+			}
 			searchResultVO = blogConnector.search(search, requestBody.getRestApiKey());
 			BeanUtils.copyProperties(searchResultVO, response);
 		}catch(Exception e) {
-			SearchNaverResultVO naverResult = blogConnector.naverSearch(search);		
-			response.setMeta(setMeta(naverResult));
-			response.setDocuments(setDocument(naverResult));
+			if("1001|KAKAO SERVER ERROR".equals(e.getMessage())) {
+				SearchNaverResultVO naverResult = blogConnector.naverSearch(search);		
+				response.setMeta(setMeta(naverResult));
+				response.setDocuments(setDocument(naverResult));
+			}else {
+				throw new CommonException(ErrorCodeEnum.KAKAO_UNDEFINED_ERROR);
+			}
+			
 		}
 		
 		return response;		

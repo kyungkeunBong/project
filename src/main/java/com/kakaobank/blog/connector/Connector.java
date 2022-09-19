@@ -196,7 +196,7 @@ public class Connector {
 					break;
 				case 500:
 				case 503:
-					errorCodeEnum = ErrorCodeEnum.KAKAO_INVOCATION_ERROR;
+					errorCodeEnum = ErrorCodeEnum.KAKAO_INTERNAL_SERVER_ERROR;
 					break;
 				default:
 					errorCodeEnum = ErrorCodeEnum.KAKAO_UNDEFINED_ERROR;				
