@@ -1,4 +1,4 @@
-package com.kakaobank.blog;
+package com.kakaobank.blog.connector;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -28,6 +28,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriTemplate;
 
 import com.kakaobank.blog.common.ConnectorAPIEnum;
+import com.kakaobank.blog.common.Constants.HeaderValues;
+import com.kakaobank.blog.common.Constants.RestApiHost;
+import com.kakaobank.blog.common.Constants.RestApiKeys;
 import com.kakaobank.blog.common.ErrorCodeEnum;
 import com.kakaobank.blog.exception.CommonException;
 import com.kakaobank.blog.vo.SearchNaverResultVO;
@@ -36,15 +39,15 @@ import com.kakaobank.blog.vo.SearchVO;
 
 @Component
 public class Connector {
-	private final String kakaoHost = "https://dapi.kakao.com";
-	private final String kakaoRestApiKey = "KakaoAK bab1235ec50b97cb58049b4633a7849b";
-	private final String naverHost = "https://openapi.naver.com";
-	private final String naverClientId = "aSfBrdAq9j0pNd40Igwy";
-	private final String naverClientSecret = "beKmWfKWcv";
+//	private final String kakaoHost = "https://dapi.kakao.com";
+//	private final String kakaoRestApiKey = "KakaoAK bab1235ec50b97cb58049b4633a7849b";
+//	private final String naverHost = "https://openapi.naver.com";
+//	private final String naverClientId = "aSfBrdAq9j0pNd40Igwy";
+//	private final String naverClientSecret = "beKmWfKWcv";
 	
 	
 	// 블로그 검색 
-	public SearchResultVO search(SearchVO searchVO) throws CommonException{
+	public SearchResultVO search(SearchVO searchVO, String apiKey) throws CommonException{
 		String resourceUrl = ConnectorAPIEnum.BLOG_SEARCH.getUrl();
 		
 		// 인풋값 세팅
@@ -55,9 +58,9 @@ public class Connector {
 		queryParams.add("size", String.valueOf(searchVO.getSize()));
 		
 		// api url 세팅 
-		URI apiUrl = createRequestUrl(kakaoHost,resourceUrl, null, queryParams);
+		URI apiUrl = createRequestUrl(RestApiHost.KAKAO_HOST,resourceUrl, null, queryParams);
 				
-		HttpEntity<?> requestEntity = new HttpEntity<>(getKakaoHeader());
+		HttpEntity<?> requestEntity = new HttpEntity<>(getKakaoHeader(apiKey));
 		
 		try {
 			ResponseEntity<SearchResultVO> result = 
@@ -93,7 +96,7 @@ public class Connector {
 		queryParams.add("display", String.valueOf(searchVO.getSize()));
 		
 		// api url 세팅 
-		URI apiUrl = createRequestUrl(naverHost,resourceUrl, null, queryParams);
+		URI apiUrl = createRequestUrl(RestApiHost.NAVER_HOST,resourceUrl, null, queryParams);
 		HttpEntity<?> requestEntity = new HttpEntity<>(getNaverHeader());
 		
 		try {
@@ -140,14 +143,14 @@ public class Connector {
 	
 	public HttpHeaders getNaverHeader() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("X-Naver-Client-Id",naverClientId);
-		headers.set("X-Naver-Client-Secret",naverClientSecret);
+		headers.set(RestApiHost.NAVER_ID,RestApiKeys.NAVER_CLIENT_ID);
+		headers.set(RestApiHost.NAVER_SERET,RestApiKeys.NAVER_CLIENT_SECRET);
 		return headers;
 	}
 	
-	public HttpHeaders getKakaoHeader() {
+	public HttpHeaders getKakaoHeader(String apiKey) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set("Authorization",kakaoRestApiKey);
+		headers.set(HeaderValues.HEADER_KEY,apiKey);
 		return headers;
 	}
 	

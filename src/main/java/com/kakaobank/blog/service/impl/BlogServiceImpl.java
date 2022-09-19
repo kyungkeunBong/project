@@ -4,11 +4,16 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
-import com.kakaobank.blog.Connector;
+
 import com.kakaobank.blog.common.ErrorCodeEnum;
+import com.kakaobank.blog.connector.Connector;
 import com.kakaobank.blog.exception.CommonException;
+import com.kakaobank.blog.repository.KeywordTopten;
+import com.kakaobank.blog.repository.WordRepository;
 import com.kakaobank.blog.service.BlogService;
 import com.kakaobank.blog.vo.DocumentVO;
 import com.kakaobank.blog.vo.MetaVO;
@@ -18,20 +23,35 @@ import com.kakaobank.blog.vo.SearchResultVO;
 import com.kakaobank.blog.vo.SearchVO;
 import com.kakaobank.blog.vo.req.BlogRequestVO;
 import com.kakaobank.blog.vo.res.BlogResponseVO;
+import com.kakaobank.blog.vo.res.KeywordResponseVO;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class BlogServiceImpl implements BlogService{
 	private final Connector blogConnector;
+	private final WordRepository wr;
+	
+	@Override
+	public KeywordResponseVO keywordTop(){
+		List<KeywordTopten> keyword = wr.findToptenKeyword();
+		
+		KeywordResponseVO response = new KeywordResponseVO();
+		response.setKeywords(keyword);
+		return response;
+	}
+	
 	@Override
 	public BlogResponseVO searchBlog(BlogRequestVO requestBody) 
 			throws CommonException, ParseException, Exception{
 		
-		// 필수값 체크
+		// 필수값 체크 param에서 필수값으로 해서 의미는 없음..
+		// 이곳에.. 값체크같은 로직이 들어갈수 있음
 		if(requestBody.getQuery() == null) {
 			throw new CommonException(ErrorCodeEnum.INPUT_ERROR);
 		}
+				
 		
 		// input vo 생성
 		SearchVO search = new SearchVO();
@@ -51,7 +71,7 @@ public class BlogServiceImpl implements BlogService{
 		BlogResponseVO response = new BlogResponseVO();
 		
 		try {
-			searchResultVO = blogConnector.search(search);
+			searchResultVO = blogConnector.search(search, requestBody.getRestApiKey());
 			BeanUtils.copyProperties(searchResultVO, response);
 		}catch(Exception e) {
 			SearchNaverResultVO naverResult = blogConnector.naverSearch(search);		
@@ -68,7 +88,7 @@ public class BlogServiceImpl implements BlogService{
 			document.setTitle(naverItemVO.getTitle());
 			document.setUrl(naverItemVO.getLink());
 			document.setContents(naverItemVO.getDescription());
-			// 시간 변환 ISO타입으로
+			// 시간 변환 yyyymmdd -> ISO타입으로
 			String naverDate = naverItemVO.getPostdate(); // yyyymmdd
 		    SimpleDateFormat from = new SimpleDateFormat("yyyyMMdd");
 		    Date date = new Date(from.parse(naverDate).getTime());
