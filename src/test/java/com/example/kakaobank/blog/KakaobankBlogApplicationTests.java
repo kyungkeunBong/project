@@ -121,13 +121,11 @@ class KakaobankBlogApplicationTests {
 	@Test
 	void 인기검색어_목록_테스트() throws URISyntaxException {
 		URI uri = new URI(baseurl+ ServiceUris.KEYWORD_TOPTEN);
-						
-		HttpHeaders header = naverHeader();
-		//when
+		
 		ResponseEntity<KeywordResponseVO> response = 
 				restTemplate.getForEntity(uri.toString(), KeywordResponseVO.class);
 				
-		System.out.println(response.toString()); 	
+		System.out.println("#############" + response.toString()); 	
 	}
 
 

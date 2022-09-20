@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.kakaobank.blog.common.ErrorCodeEnum;
 import com.kakaobank.blog.connector.Connector;
 import com.kakaobank.blog.dto.KeywordDto;
+import com.kakaobank.blog.entity.Keyword;
 import com.kakaobank.blog.exception.CommonException;
 import com.kakaobank.blog.repository.KeywordTopten;
 import com.kakaobank.blog.repository.WordRepository;
@@ -39,8 +40,9 @@ public class BlogServiceImpl implements BlogService{
 		List<KeywordTopten> keywords = wr.findToptenKeyword();
 		KeywordResponseVO response = new KeywordResponseVO();
 		List<KeywordDto> resultList = new ArrayList<>();
-		KeywordDto result = new KeywordDto();
+		
 		for(KeywordTopten keyword : keywords) {
+			KeywordDto result = new KeywordDto();
 			result.setCount(keyword.getCount());
 			result.setKeyword(keyword.getKeyword());
 			resultList.add(result);
@@ -93,7 +95,10 @@ public class BlogServiceImpl implements BlogService{
 			}
 			
 		}
-		
+		// 검색한 키워드 등록
+		System.out.println(" id 값 : " + wr.count());
+		Keyword key = new Keyword(wr.count()+1, requestBody.getQuery(), "1");
+		wr.save(key);
 		return response;		
 	}
 	private ArrayList<DocumentVO> setDocument(SearchNaverResultVO naverResult) throws ParseException {
