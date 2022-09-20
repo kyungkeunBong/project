@@ -26,42 +26,19 @@ import lombok.RequiredArgsConstructor;
 public class BlogController {
 	private final BlogService blogService;
 	
-	@RequestMapping(method = RequestMethod.GET, value = ServiceUris.BLOG_SEARCH)
-	public BlogResponseVO searchBlog(@RequestParam(required = true) String query, 
-			@RequestParam(required = false) String sort, 
-			@RequestParam(required = false) String page,
-			@RequestParam(required = false) String size,
+	@RequestMapping(method = RequestMethod.POST, value = ServiceUris.BLOG_SEARCH)
+	public BlogResponseVO searchBlog(@RequestBody BlogRequestVO requestBody,
 			HttpServletRequest httpRequest) throws CommonException , ParseException, Exception{
-		
-		BlogResponseVO responseVO = blogService.searchBlog(setRequest(query, sort, page, size, httpRequest));
+		requestBody.setRestApiKey(httpRequest.getHeader(HeaderValues.HEADER_KEY).toString());
+		if(httpRequest.getHeader(RestApiHost.NAVER_ID) != null) {
+			// 강제 네이버 조회
+			requestBody.setNaverId(httpRequest.getHeader(RestApiHost.NAVER_ID).toString());
+		}
+		BlogResponseVO responseVO = blogService.searchBlog(requestBody);
 		System.out.println("## response : " + responseVO.toString());
 		return responseVO;
 	}
 
-	private BlogRequestVO setRequest(String query, String sort, String page, String size,
-			HttpServletRequest httpRequest) {
-		BlogRequestVO request = new BlogRequestVO();
-		request.setRestApiKey(httpRequest.getHeader(HeaderValues.HEADER_KEY).toString());
-		
-		if(httpRequest.getHeader(RestApiHost.NAVER_ID) != null) {
-			// 강제 네이버 조회
-			request.setNaverId(httpRequest.getHeader(RestApiHost.NAVER_ID).toString());
-		}
-		// requestParam 으로 들어온값 세팅
-		if(query != null) {
-			request.setQuery(query);
-		}
-		if(sort != null) {
-			request.setSort(sort);
-		}
-		if(page != null) {
-			request.setPage(Integer.parseInt(page));
-		}
-		if(size !=null ) {
-			request.setSize(Integer.parseInt(size));
-		}
-		return request;
-	}
 	
 	@RequestMapping(method = RequestMethod.GET, value = ServiceUris.KEYWORD_TOPTEN)
 	public KeywordResponseVO keywordTop() {

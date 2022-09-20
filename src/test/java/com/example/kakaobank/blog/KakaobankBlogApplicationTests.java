@@ -1,5 +1,10 @@
 package com.example.kakaobank.blog;
 
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -11,17 +16,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.kakaobank.blog.KakaobankBlogApplication;
 import com.kakaobank.blog.common.Constants.HeaderValues;
 import com.kakaobank.blog.common.Constants.RestApiHost;
 import com.kakaobank.blog.common.Constants.RestApiKeys;
 import com.kakaobank.blog.common.Constants.ServiceUris;
-import com.kakaobank.blog.controller.BlogController;
 import com.kakaobank.blog.vo.req.BlogRequestVO;
 import com.kakaobank.blog.vo.res.BlogResponseVO;
 import com.kakaobank.blog.vo.res.KeywordResponseVO;
@@ -30,8 +32,6 @@ import com.kakaobank.blog.vo.res.KeywordResponseVO;
 @ContextConfiguration(classes = KakaobankBlogApplication.class)
 class KakaobankBlogApplicationTests {
 
-	@Autowired
-	private BlogController blogController;
 	@Autowired
 	TestRestTemplate restTemplate;
 	String baseurl;
@@ -54,24 +54,48 @@ class KakaobankBlogApplicationTests {
 		headers.set(RestApiHost.NAVER_SERET, RestApiKeys.NAVER_CLIENT_SECRET);
 		return headers;	
 	}
-	@DisplayName("카카오 blog 검색 테스트")
+	@DisplayName("카카오 blog 검색 최근조회 테스트")
 	@Test
-	void 카카오_blog_검색_테스트() throws URISyntaxException {
+	void 카카오_blog_검색_recency_테스트() throws URISyntaxException {
 		URI uri = new URI(baseurl+ ServiceUris.BLOG_SEARCH);
 		
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(uri.toString())
-				.queryParam("query", "test")
-			    .queryParam("sort", "recency");
+		BlogRequestVO requestVO = new BlogRequestVO();
+		requestVO.setQuery("test");
+		requestVO.setSort("recency");
 				
 		HttpHeaders header = kakaoHeader();
-		HttpEntity<BlogRequestVO> request = new HttpEntity<BlogRequestVO>(header);
+		HttpEntity<BlogRequestVO> request = new HttpEntity<>(requestVO, header);
 		
-		System.out.println("URL : " +uriBuilder.toUriString());
+		
 		//when
 		ResponseEntity<BlogResponseVO> response = 
-				restTemplate.exchange(uriBuilder.toUriString(),  HttpMethod.GET, request, BlogResponseVO.class);
+				restTemplate.postForEntity(uri.toString(), request, BlogResponseVO.class);
+		
+		//then
+		assertNotNull(response.getBody());
+		
+	}
+	
+	@DisplayName("카카오 blog 검색 정확도 조회 테스트")
+	@Test
+	void 카카오_blog_검색_accuracy_테스트() throws URISyntaxException {
+		URI uri = new URI(baseurl+ ServiceUris.BLOG_SEARCH);
+		
+		BlogRequestVO requestVO = new BlogRequestVO();
+		requestVO.setQuery("test");
+//		requestVO.setSort("accuracy"); // 디폴트 세팅됨
 				
-		System.out.println(response.toString()); 	
+		HttpHeaders header = kakaoHeader();
+		HttpEntity<BlogRequestVO> request = new HttpEntity<>(requestVO, header);
+		
+		
+		//when
+		ResponseEntity<BlogResponseVO> response = 
+				restTemplate.postForEntity(uri.toString(), request, BlogResponseVO.class);
+		
+		//then
+		assertNotNull(response.getBody());
+		
 	}
 	
 	@DisplayName("네이버 blog 검색 테스트")
@@ -79,19 +103,18 @@ class KakaobankBlogApplicationTests {
 	void 네이버_blog_검색_테스트() throws URISyntaxException {
 		URI uri = new URI(baseurl+ ServiceUris.BLOG_SEARCH);
 		
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(uri.toString())
-				.queryParam("query", "test")
-			    .queryParam("sort", "recency");
-				
-		HttpHeaders header = naverHeader();
-		HttpEntity<BlogRequestVO> request = new HttpEntity<BlogRequestVO>(header);
+		BlogRequestVO requestVO = new BlogRequestVO();
+		requestVO.setQuery("test");
 		
-		System.out.println("URL : " +uriBuilder.toUriString());
+		HttpHeaders header = naverHeader();
+		HttpEntity<BlogRequestVO> request = new HttpEntity<>(requestVO, header);
+		
 		//when
 		ResponseEntity<BlogResponseVO> response = 
-				restTemplate.exchange(uriBuilder.toUriString(),  HttpMethod.GET, request, BlogResponseVO.class);
-				
-		System.out.println(response.toString()); 	
+				restTemplate.postForEntity(uri.toString(), request, BlogResponseVO.class);
+		//then
+		assertNotNull(response.getBody());
+		
 	}
 	
 	@DisplayName("인기검색어 목록 테스트")

@@ -37,9 +37,7 @@ public class BlogServiceImpl implements BlogService{
 	@Override
 	public KeywordResponseVO keywordTop(){
 		List<KeywordTopten> keywords = wr.findToptenKeyword();
-		System.out.println("########## db find");
 		KeywordResponseVO response = new KeywordResponseVO();
-		System.out.println("########## db find " + keywords.toString());
 		List<KeywordDto> resultList = new ArrayList<>();
 		KeywordDto result = new KeywordDto();
 		for(KeywordTopten keyword : keywords) {
