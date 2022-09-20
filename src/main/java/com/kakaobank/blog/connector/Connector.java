@@ -38,7 +38,7 @@ import com.kakaobank.blog.vo.SearchResultVO;
 import com.kakaobank.blog.vo.SearchVO;
 
 @Component
-public class Connector {
+public class Connector extends AbstractConnector{
 //	private final String kakaoHost = "https://dapi.kakao.com";
 //	private final String kakaoRestApiKey = "KakaoAK bab1235ec50b97cb58049b4633a7849b";
 //	private final String naverHost = "https://openapi.naver.com";
@@ -109,101 +109,5 @@ public class Connector {
 		return null;
 	}
 	
-	public URI createRequestUrl(String reqHost, 
-			String resourceUrl, 
-			Map<String, String> urlVariables, 
-			MultiValueMap<String, String> queryParams) 
-					throws CommonException{
-		UriTemplate uriTemplate = new UriTemplate(reqHost + resourceUrl);
-		String apiUrl;
-		if(urlVariables == null) {
-			// get 방식 대응
-			apiUrl = uriTemplate.toString();
-		}else {
-			// post 방식 대응
-			apiUrl = uriTemplate.expand(urlVariables).toString();
-		}
-		
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(apiUrl);
-		
-		if(queryParams != null) {
-			for(Entry<String, List<String>> entrySet : queryParams.entrySet()) {
-				if(entrySet.getValue().get(0) != null) {
-					try {
-						uriBuilder.queryParam(entrySet.getKey(), URLEncoder.encode(entrySet.getValue().get(0), "UTF-8"));
-					}catch(Exception e){
-						throw new CommonException(ErrorCodeEnum.URL_ENCODE_ERROR);
-					}
-				}
-			}
-		}		
-		URI uri = uriBuilder.build(true).toUri();
-		return uri;
-	}
 	
-	public HttpHeaders getNaverHeader() {
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(RestApiHost.NAVER_ID,RestApiKeys.NAVER_CLIENT_ID);
-		headers.set(RestApiHost.NAVER_SERET,RestApiKeys.NAVER_CLIENT_SECRET);
-		return headers;
-	}
-	
-	public HttpHeaders getKakaoHeader(String apiKey) {
-		HttpHeaders headers = new HttpHeaders();
-		headers.set(HeaderValues.HEADER_KEY,apiKey);
-		return headers;
-	}
-	
-	public RestTemplate getRestTemplate() {
-		CloseableHttpClient httpClient = 
-				HttpClients.custom().setMaxConnTotal(2).setMaxConnPerRoute(10).build();
-		return createCommonRestTemplate(httpClient);		
-	}
-	
-	public RestTemplate createCommonRestTemplate(CloseableHttpClient httpClient) {
-		HttpComponentsClientHttpRequestFactory requestFactory =
-				getHttpComponentsClientHttpRequestFactory(httpClient);
-		RestTemplate restTemplate = new RestTemplate(requestFactory);
-		restTemplate.getMessageConverters().add(jacksonSupportsMoreType());
-		return restTemplate;		
-	}
-	
-	private HttpComponentsClientHttpRequestFactory 
-		getHttpComponentsClientHttpRequestFactory(CloseableHttpClient httpClient) {
-		HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-		requestFactory.setHttpClient(httpClient);
-		requestFactory.setConnectionRequestTimeout(3000); // 타임아웃 30초
-		requestFactory.setReadTimeout(3000); 
-		return requestFactory;
-	}
-	
-	private HttpMessageConverter jacksonSupportsMoreType() {
-		MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
-		converter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_OCTET_STREAM));
-		return converter;
-	}
-	
-	public void handleError(RestClientException e) throws CommonException{
-		if(e instanceof RestClientException) {
-			ErrorCodeEnum errorCodeEnum = null;
-			switch(((RestClientResponseException)e).getRawStatusCode()) {
-			
-				case 400:
-				case 401:
-				case 403:
-				case 404:
-					errorCodeEnum = ErrorCodeEnum.KAKAO_CLIENT_ERROR;
-					break;
-				case 500:
-				case 503:
-					errorCodeEnum = ErrorCodeEnum.KAKAO_INTERNAL_SERVER_ERROR;
-					break;
-				default:
-					errorCodeEnum = ErrorCodeEnum.KAKAO_UNDEFINED_ERROR;				
-			}
-			throw new CommonException(errorCodeEnum);
-		}else {
-			throw new CommonException(ErrorCodeEnum.KAKAO_UNDEFINED_ERROR);
-		}
-	}
 }
