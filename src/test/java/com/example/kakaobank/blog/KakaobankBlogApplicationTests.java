@@ -28,11 +28,8 @@ import com.kakaobank.blog.vo.res.KeywordResponseVO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ContextConfiguration(classes = KakaobankBlogApplication.class)
-@RequiredArgsConstructor
 class KakaobankBlogApplicationTests {
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-
-	private final TestRestTemplate restTemplate;
 	String baseurl;
 	
 	@BeforeEach
@@ -64,9 +61,9 @@ class KakaobankBlogApplicationTests {
 				
 		HttpHeaders header = kakaoHeader();
 		HttpEntity<BlogRequestVO> request = new HttpEntity<>(requestVO, header);
-		
-		
+
 		//when
+		TestRestTemplate restTemplate = new TestRestTemplate();
 		ResponseEntity<BlogResponseVO> response = 
 				restTemplate.postForEntity(uri.toString(), request, BlogResponseVO.class);
 		
@@ -89,6 +86,7 @@ class KakaobankBlogApplicationTests {
 		
 		
 		//when
+		TestRestTemplate restTemplate = new TestRestTemplate();
 		ResponseEntity<BlogResponseVO> response = 
 				restTemplate.postForEntity(uri.toString(), request, BlogResponseVO.class);
 		
@@ -109,6 +107,7 @@ class KakaobankBlogApplicationTests {
 		HttpEntity<BlogRequestVO> request = new HttpEntity<>(requestVO, header);
 		
 		//when
+		TestRestTemplate restTemplate = new TestRestTemplate();
 		ResponseEntity<BlogResponseVO> response = 
 				restTemplate.postForEntity(uri.toString(), request, BlogResponseVO.class);
 		//then
@@ -120,7 +119,8 @@ class KakaobankBlogApplicationTests {
 	@Test
 	void 인기검색어_목록_테스트() throws URISyntaxException {
 		URI uri = new URI(baseurl+ Constants.ServiceUris.KEYWORD_TOPTEN);
-		
+
+		TestRestTemplate restTemplate = new TestRestTemplate();
 		ResponseEntity<KeywordResponseVO> response = 
 				restTemplate.getForEntity(uri.toString(), KeywordResponseVO.class);
 				
