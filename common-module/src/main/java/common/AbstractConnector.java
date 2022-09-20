@@ -69,7 +69,7 @@ public class AbstractConnector {
 	}
 	
 	public RestTemplate getRestTemplate() {
-		CloseableHttpClient httpClient = 
+		CloseableHttpClient httpClient =
 				HttpClients.custom().setMaxConnTotal(2).setMaxConnPerRoute(10).build();
 		return createCommonRestTemplate(httpClient);		
 	}

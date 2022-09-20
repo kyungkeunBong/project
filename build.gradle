@@ -19,12 +19,16 @@ subprojects {
 	}
 
 	dependencies {
+		implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 		implementation 'org.springframework.boot:spring-boot-starter-web'
 		testImplementation 'org.projectlombok:lombok:1.18.22'
+		testImplementation 'org.projectlombok:lombok:1.18.22'
 		annotationProcessor 'org.projectlombok:lombok'
-		implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+		compileOnly 'org.projectlombok:lombok'
+		runtimeOnly 'com.h2database:h2'
+		testImplementation 'org.springframework.boot:spring-boot-starter-test'
 		implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
-		implementation 'org.projectlombok:lombok:1.18.22'
+		implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 	}
 
 	test {
@@ -47,18 +51,12 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	testImplementation 'org.projectlombok:lombok:1.18.22'
-	testImplementation 'org.projectlombok:lombok:1.18.22'
-	annotationProcessor 'org.projectlombok:lombok'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'com.h2database:h2'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+
 	implementation project(':common-module')
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+

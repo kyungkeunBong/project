@@ -1,3 +1,4 @@
 rootProject.name = 'kakaobank-blog'
 include 'common-module'
+include 'Api'
 
