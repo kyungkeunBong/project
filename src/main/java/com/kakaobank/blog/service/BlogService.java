@@ -2,7 +2,7 @@ package com.kakaobank.blog.service;
 
 import java.text.ParseException;
 
-import com.kakaobank.blog.exception.CommonException;
+import exception.CommonException;
 import com.kakaobank.blog.vo.req.BlogRequestVO;
 import com.kakaobank.blog.vo.res.BlogResponseVO;
 import com.kakaobank.blog.vo.res.KeywordResponseVO;

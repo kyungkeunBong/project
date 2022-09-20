@@ -2,16 +2,18 @@ package com.example.kakaobank.blog;
 
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import common.Constants;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -20,20 +22,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ContextConfiguration;
 
 import com.kakaobank.blog.KakaobankBlogApplication;
-import com.kakaobank.blog.common.Constants.HeaderValues;
-import com.kakaobank.blog.common.Constants.RestApiHost;
-import com.kakaobank.blog.common.Constants.RestApiKeys;
-import com.kakaobank.blog.common.Constants.ServiceUris;
 import com.kakaobank.blog.vo.req.BlogRequestVO;
 import com.kakaobank.blog.vo.res.BlogResponseVO;
 import com.kakaobank.blog.vo.res.KeywordResponseVO;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @ContextConfiguration(classes = KakaobankBlogApplication.class)
+@RequiredArgsConstructor
 class KakaobankBlogApplicationTests {
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-	@Autowired
-	TestRestTemplate restTemplate;
+	private final TestRestTemplate restTemplate;
 	String baseurl;
 	
 	@BeforeEach
@@ -43,21 +42,21 @@ class KakaobankBlogApplicationTests {
 	
 	HttpHeaders kakaoHeader() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(HeaderValues.HEADER_KEY, RestApiKeys.KAKAO_REST_API_KEY);
+		headers.set(Constants.HeaderValues.HEADER_KEY, Constants.RestApiKeys.KAKAO_REST_API_KEY);
 		return headers;	
 	}
 	
 	HttpHeaders naverHeader() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(HeaderValues.HEADER_KEY, RestApiKeys.KAKAO_REST_API_KEY);
-		headers.set(RestApiHost.NAVER_ID, RestApiKeys.NAVER_CLIENT_ID);
-		headers.set(RestApiHost.NAVER_SERET, RestApiKeys.NAVER_CLIENT_SECRET);
+		headers.set(Constants.HeaderValues.HEADER_KEY, Constants.RestApiKeys.KAKAO_REST_API_KEY);
+		headers.set(Constants.RestApiHost.NAVER_ID, Constants.RestApiKeys.NAVER_CLIENT_ID);
+		headers.set(Constants.RestApiHost.NAVER_SERET, Constants.RestApiKeys.NAVER_CLIENT_SECRET);
 		return headers;	
 	}
 	@DisplayName("카카오 blog 검색 최근조회 테스트")
 	@Test
 	void 카카오_blog_검색_recency_테스트() throws URISyntaxException {
-		URI uri = new URI(baseurl+ ServiceUris.BLOG_SEARCH);
+		URI uri = new URI(baseurl+ Constants.ServiceUris.BLOG_SEARCH);
 		
 		BlogRequestVO requestVO = new BlogRequestVO();
 		requestVO.setQuery("test");
@@ -73,13 +72,13 @@ class KakaobankBlogApplicationTests {
 		
 		//then
 		assertNotNull(response.getBody());
-		
+		LOGGER.debug("naver search recency result {}" , response.getBody());
 	}
 	
 	@DisplayName("카카오 blog 검색 정확도 조회 테스트")
 	@Test
 	void 카카오_blog_검색_accuracy_테스트() throws URISyntaxException {
-		URI uri = new URI(baseurl+ ServiceUris.BLOG_SEARCH);
+		URI uri = new URI(baseurl+ Constants.ServiceUris.BLOG_SEARCH);
 		
 		BlogRequestVO requestVO = new BlogRequestVO();
 		requestVO.setQuery("test");
@@ -95,13 +94,13 @@ class KakaobankBlogApplicationTests {
 		
 		//then
 		assertNotNull(response.getBody());
-		
+		LOGGER.debug("kakao search accurate result {}" , response.getBody());
 	}
 	
 	@DisplayName("네이버 blog 검색 테스트")
 	@Test
 	void 네이버_blog_검색_테스트() throws URISyntaxException {
-		URI uri = new URI(baseurl+ ServiceUris.BLOG_SEARCH);
+		URI uri = new URI(baseurl+ Constants.ServiceUris.BLOG_SEARCH);
 		
 		BlogRequestVO requestVO = new BlogRequestVO();
 		requestVO.setQuery("test");
@@ -114,18 +113,18 @@ class KakaobankBlogApplicationTests {
 				restTemplate.postForEntity(uri.toString(), request, BlogResponseVO.class);
 		//then
 		assertNotNull(response.getBody());
-		
+		LOGGER.debug("naver search result {}" , response.getBody());
 	}
 	
 	@DisplayName("인기검색어 목록 테스트")
 	@Test
 	void 인기검색어_목록_테스트() throws URISyntaxException {
-		URI uri = new URI(baseurl+ ServiceUris.KEYWORD_TOPTEN);
+		URI uri = new URI(baseurl+ Constants.ServiceUris.KEYWORD_TOPTEN);
 		
 		ResponseEntity<KeywordResponseVO> response = 
 				restTemplate.getForEntity(uri.toString(), KeywordResponseVO.class);
 				
-		System.out.println("#############" + response.toString()); 	
+		LOGGER.debug("keyword list result {}" , response.getBody());
 	}
 
 

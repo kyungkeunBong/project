@@ -1,4 +1,4 @@
-package com.kakaobank.blog.schduler;
+package com.kakaobank.blog.scheduler;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -27,13 +27,11 @@ public class WordDBScheduler {
 	
 	@PostConstruct
 	public void deleteWordDB() {
-		System.out.println("delete Start : " + getPartitionCode());
 		wr.deleteByPartitionCode(getPartitionCode());
 	}
 	
 	@Scheduled(cron="0 0 0 * * *")
 	public void scheduleJob() {
-		System.out.println("delete Start : " + getPartitionCode());
 		this.deleteWordDB();
 	}
 }

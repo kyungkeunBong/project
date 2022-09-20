@@ -1,4 +1,4 @@
-package com.kakaobank.blog.common;
+package common;
 
 public enum ConnectorAPIEnum {
 	BLOG_SEARCH("/v2/search/blog"),

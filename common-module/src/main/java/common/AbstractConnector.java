@@ -1,4 +1,4 @@
-package com.kakaobank.blog.connector;
+package common;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import exception.CommonException;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.http.HttpHeaders;
@@ -21,18 +22,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriTemplate;
 
-import com.kakaobank.blog.common.ErrorCodeEnum;
-import com.kakaobank.blog.common.Constants.HeaderValues;
-import com.kakaobank.blog.common.Constants.RestApiHost;
-import com.kakaobank.blog.common.Constants.RestApiKeys;
-import com.kakaobank.blog.exception.CommonException;
-
 public class AbstractConnector {
 	public URI createRequestUrl(String reqHost, 
 			String resourceUrl, 
 			Map<String, String> urlVariables, 
 			MultiValueMap<String, String> queryParams) 
-					throws CommonException{
+					throws CommonException {
 		UriTemplate uriTemplate = new UriTemplate(reqHost + resourceUrl);
 		String apiUrl;
 		if(urlVariables == null) {
@@ -62,14 +57,14 @@ public class AbstractConnector {
 	
 	public HttpHeaders getNaverHeader() {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(RestApiHost.NAVER_ID,RestApiKeys.NAVER_CLIENT_ID);
-		headers.set(RestApiHost.NAVER_SERET,RestApiKeys.NAVER_CLIENT_SECRET);
+		headers.set(Constants.RestApiHost.NAVER_ID, Constants.RestApiKeys.NAVER_CLIENT_ID);
+		headers.set(Constants.RestApiHost.NAVER_SERET, Constants.RestApiKeys.NAVER_CLIENT_SECRET);
 		return headers;
 	}
 	
 	public HttpHeaders getKakaoHeader(String apiKey) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.set(HeaderValues.HEADER_KEY,apiKey);
+		headers.set(Constants.HeaderValues.HEADER_KEY,apiKey);
 		return headers;
 	}
 	

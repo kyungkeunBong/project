@@ -1,6 +1,4 @@
-package com.kakaobank.blog.common;
-
-import com.kakaobank.blog.common.Constants.RestApiKeys;
+package common;
 
 public class Constants {
 	public static class ServiceUris{

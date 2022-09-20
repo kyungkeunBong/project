@@ -1,6 +1,7 @@
-package com.kakaobank.blog.exception;
+package exception;
 
-import com.kakaobank.blog.common.ErrorCodeEnum;
+
+import common.ErrorCodeEnum;
 
 public class CommonException extends Exception {
 

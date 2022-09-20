@@ -3,48 +3,33 @@ package com.kakaobank.blog.connector;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import common.AbstractConnector;
+import common.ConnectorAPIEnum;
+import common.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.client.RestClientResponseException;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-import org.springframework.web.util.UriTemplate;
 
-import com.kakaobank.blog.common.ConnectorAPIEnum;
-import com.kakaobank.blog.common.Constants.HeaderValues;
-import com.kakaobank.blog.common.Constants.RestApiHost;
-import com.kakaobank.blog.common.Constants.RestApiKeys;
-import com.kakaobank.blog.common.ErrorCodeEnum;
-import com.kakaobank.blog.exception.CommonException;
+import exception.CommonException;
 import com.kakaobank.blog.vo.SearchNaverResultVO;
 import com.kakaobank.blog.vo.SearchResultVO;
 import com.kakaobank.blog.vo.SearchVO;
 
 @Component
-public class Connector extends AbstractConnector{
+public class Connector extends AbstractConnector {
 //	private final String kakaoHost = "https://dapi.kakao.com";
 //	private final String kakaoRestApiKey = "KakaoAK bab1235ec50b97cb58049b4633a7849b";
 //	private final String naverHost = "https://openapi.naver.com";
 //	private final String naverClientId = "aSfBrdAq9j0pNd40Igwy";
 //	private final String naverClientSecret = "beKmWfKWcv";
-	
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	
 	// 블로그 검색 
 	public SearchResultVO search(SearchVO searchVO, String apiKey) throws CommonException{
@@ -56,9 +41,10 @@ public class Connector extends AbstractConnector{
 		queryParams.add("sort", searchVO.getSort());
 		queryParams.add("page", String.valueOf(searchVO.getPage()));
 		queryParams.add("size", String.valueOf(searchVO.getSize()));
-		
+
+		LOGGER.debug("queryParams : {}",queryParams.toString());
 		// api url 세팅 
-		URI apiUrl = createRequestUrl(RestApiHost.KAKAO_HOST,resourceUrl, null, queryParams);
+		URI apiUrl = createRequestUrl(Constants.RestApiHost.KAKAO_HOST,resourceUrl, null, queryParams);
 				
 		HttpEntity<?> requestEntity = new HttpEntity<>(getKakaoHeader(apiKey));
 		
@@ -96,7 +82,7 @@ public class Connector extends AbstractConnector{
 		queryParams.add("display", String.valueOf(searchVO.getSize()));
 		
 		// api url 세팅 
-		URI apiUrl = createRequestUrl(RestApiHost.NAVER_HOST,resourceUrl, null, queryParams);
+		URI apiUrl = createRequestUrl(Constants.RestApiHost.NAVER_HOST,resourceUrl, null, queryParams);
 		HttpEntity<?> requestEntity = new HttpEntity<>(getNaverHeader());
 		
 		try {
@@ -108,6 +94,4 @@ public class Connector extends AbstractConnector{
 		}
 		return null;
 	}
-	
-	
 }

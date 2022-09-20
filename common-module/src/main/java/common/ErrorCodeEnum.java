@@ -1,4 +1,5 @@
-package com.kakaobank.blog.common;
+package common;
+
 
 import lombok.Getter;
 import lombok.Setter;

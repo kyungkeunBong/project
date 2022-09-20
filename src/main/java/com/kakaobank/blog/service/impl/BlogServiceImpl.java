@@ -1,19 +1,20 @@
 package com.kakaobank.blog.service.impl;
 
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
+import common.ErrorCodeEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
-import com.kakaobank.blog.common.ErrorCodeEnum;
 import com.kakaobank.blog.connector.Connector;
 import com.kakaobank.blog.dto.KeywordDto;
 import com.kakaobank.blog.entity.Keyword;
-import com.kakaobank.blog.exception.CommonException;
+import exception.CommonException;
 import com.kakaobank.blog.repository.KeywordTopten;
 import com.kakaobank.blog.repository.WordRepository;
 import com.kakaobank.blog.service.BlogService;
@@ -32,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class BlogServiceImpl implements BlogService{
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	private final Connector blogConnector;
 	private final WordRepository wr;
 	
@@ -52,8 +54,8 @@ public class BlogServiceImpl implements BlogService{
 	}
 	
 	@Override
-	public BlogResponseVO searchBlog(BlogRequestVO requestBody) 
-			throws CommonException, ParseException, Exception{
+	public BlogResponseVO searchBlog(BlogRequestVO requestBody)
+			throws CommonException, UnsupportedEncodingException, ParseException {
 		
 		// 필수값 체크 param에서 필수값으로 해서 의미는 없음..
 		// 이곳에.. 값체크같은 로직이 들어갈수 있음
@@ -96,8 +98,10 @@ public class BlogServiceImpl implements BlogService{
 			
 		}
 		// 검색한 키워드 등록
-		System.out.println(" id 값 : " + wr.count());
-		Keyword key = new Keyword(wr.count()+1, requestBody.getQuery(), "1");
+		LOGGER.debug("현재까지 id 값 : {}" , wr.count());
+		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+9"));
+		calendar.setTimeInMillis(new Date().getTime());
+		Keyword key = new Keyword(wr.count()+1, requestBody.getQuery(), String.valueOf(calendar.get(Calendar.DAY_OF_WEEK)));
 		wr.save(key);
 		return response;		
 	}
