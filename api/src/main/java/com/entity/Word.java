@@ -2,10 +2,7 @@ package com.entity;
 
 import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -13,9 +10,10 @@ import javax.persistence.Transient;
 @Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name="word")
-public class Keyword {
+public class Word {
 	@Id
 	@Column(name="keyword_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long keyword_id;
 	@Column(name="keyword")
     private String keyword;
@@ -24,7 +22,7 @@ public class Keyword {
     private String partitioncode;
     
     @Builder
-    public Keyword(Long keyword_id, String keyword, String partitioncode) {
+    public Word(Long keyword_id, String keyword, String partitioncode) {
         this.keyword_id = keyword_id;
         this.keyword = keyword;
         this.partitioncode = partitioncode;

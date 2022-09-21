@@ -1,6 +1,6 @@
 package com.repository;
 
-import com.entity.Keyword;
+import com.entity.Word;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public interface WordRepository extends JpaRepository<Keyword, Long>{
+public interface WordRepository extends JpaRepository<Word, Long>{
 	@Query(value = 
 			"select keyword, count(keyword) as count" 
 			+ " from word" 

@@ -3,7 +3,7 @@ package com.service.impl;
 import common.ErrorCodeEnum;
 import com.connector.Connector;
 import com.dto.KeywordDto;
-import com.entity.Keyword;
+import com.entity.Word;
 import exception.CommonException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -95,7 +95,7 @@ public class BlogServiceImpl implements BlogService {
 			LOGGER.debug("현재까지 id 값 : {}", wr.count());
 			Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+9"));
 			calendar.setTimeInMillis(new Date().getTime());
-			Keyword key = new Keyword(wr.count() + 1, requestBody.getQuery(), String.valueOf(calendar.get(Calendar.DAY_OF_WEEK)));
+			Word key = new Word(wr.count() + 1, requestBody.getQuery(), String.valueOf(calendar.get(Calendar.DAY_OF_WEEK)));
 			wr.save(key);
 		}catch(Exception e){
 			LOGGER.error(ErrorCodeEnum.KAKAO_DB_ERROR.getDescription());
