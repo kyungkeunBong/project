@@ -195,6 +195,9 @@ partitioncode : varchar 에이징 삭제를 위한 요일값 세팅
 - httpclient:4.5.13
   - http 통신을 위해 사용
 
+### 실행 jar link url
+https://downgit.github.io/#/home?url=https://github.com/kyungkeunBong/project/blob/master/Api.kkbong.jar
+
 
 
 
