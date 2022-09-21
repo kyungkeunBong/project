@@ -2,8 +2,8 @@ package common;
 
 public class Constants {
 	public static class ServiceUris{
-		public static final String BLOG_SEARCH = "/rest/blog.service/blog/search/list";
-		public static final String KEYWORD_TOPTEN = "/rest/blog.service/keyword/top";
+		public static final String BLOG_SEARCH = "/blog/search/list";
+		public static final String KEYWORD_TOPTEN = "/blog/keyword/top";
 	}
 	public static class HeaderValues{
 		public static final String HEADER_KEY = "Authorization";
