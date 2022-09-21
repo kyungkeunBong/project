@@ -55,8 +55,7 @@ public class BlogServiceImpl implements BlogService {
 		if(requestBody.getQuery() == null) {
 			throw new CommonException(ErrorCodeEnum.INPUT_ERROR);
 		}
-				
-		
+
 		// input com.vo 생성
 		SearchVO search = new SearchVO();
 		search.setQuery(requestBody.getQuery());
@@ -131,5 +130,4 @@ public class BlogServiceImpl implements BlogService {
 		}
 		return meta;
 	}
-	
 }
