@@ -91,11 +91,16 @@ public class BlogServiceImpl implements BlogService {
 			
 		}
 		// 검색한 키워드 등록
-		LOGGER.debug("현재까지 id 값 : {}" , wr.count());
-		Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+9"));
-		calendar.setTimeInMillis(new Date().getTime());
-		Keyword key = new Keyword(wr.count()+1, requestBody.getQuery(), String.valueOf(calendar.get(Calendar.DAY_OF_WEEK)));
-		wr.save(key);
+		// db inert 실패시에도 검색값은 전달해줘야함.
+		try {
+			LOGGER.debug("현재까지 id 값 : {}", wr.count());
+			Calendar calendar = new GregorianCalendar(TimeZone.getTimeZone("GMT+9"));
+			calendar.setTimeInMillis(new Date().getTime());
+			Keyword key = new Keyword(wr.count() + 1, requestBody.getQuery(), String.valueOf(calendar.get(Calendar.DAY_OF_WEEK)));
+			wr.save(key);
+		}catch(Exception e){
+			LOGGER.error(ErrorCodeEnum.KAKAO_DB_ERROR.getDescription());
+		}
 		return response;		
 	}
 	private ArrayList<DocumentVO> setDocument(SearchNaverResultVO naverResult) throws ParseException {
