@@ -20,13 +20,22 @@ public class HeaderInterCeptor implements HandlerInterceptor{
             throws CommonException, IOException {
         LOGGER.debug("Interceptor start");
     	// 헤더 restApiKey 체크
-        if (request.getHeader(Constants.HeaderValues.HEADER_KEY).split(Constants.HeaderValues.HEADER_KEY_PREVALUE)[1] != null) {
-        	return true;
-        }else {
-          response.sendError(401, ErrorCodeEnum.KAKAO_REST_API_KEY_ERROR.getDescription());
-          response.setStatus(401);
-          return false;
+        try{
+            final String restApiKey = request.getHeader(Constants.HeaderValues.HEADER_KEY).split(Constants.HeaderValues.HEADER_KEY_PREVALUE)[1];
+            if( restApiKey != null){
+                return true;
+            }
+        }catch(ArrayIndexOutOfBoundsException e){
+            response.sendError(401, ErrorCodeEnum.KAKAO_REST_API_KEY_ERROR.getDescription());
+            response.setStatus(401);
+            return false;
+        }catch(NullPointerException e){
+            response.sendError(401, ErrorCodeEnum.KAKAO_REST_API_KEY_ERROR.getDescription());
+            response.setStatus(401);
+            return false;
         }
+        response.sendError(401, ErrorCodeEnum.KAKAO_REST_API_KEY_ERROR.getDescription());
+        response.setStatus(401);
+        return false;
     }
-
 }
