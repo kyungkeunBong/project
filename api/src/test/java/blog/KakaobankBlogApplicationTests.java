@@ -20,6 +20,9 @@ import com.vo.res.KeywordResponseVO;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -64,10 +67,11 @@ class KakaobankBlogApplicationTests {
 				restTemplate.postForEntity(uri.toString(), request, BlogResponseVO.class);
 		
 		//then
+		assertThat(response.getStatusCodeValue(), is(200));
 		assertNotNull(response.getBody());
 		LOGGER.debug("naver search recency result {}" , response.getBody());
 	}
-	
+
 	@DisplayName("카카오 blog 검색 정확도 조회 테스트")
 	@Test
 	void 카카오_blog_검색_accuracy_테스트() throws URISyntaxException {
@@ -87,6 +91,7 @@ class KakaobankBlogApplicationTests {
 				restTemplate.postForEntity(uri.toString(), request, BlogResponseVO.class);
 		
 		//then
+		assertThat(response.getStatusCodeValue(), is(200));
 		assertNotNull(response.getBody());
 		LOGGER.debug("kakao search accurate result {}" , response.getBody());
 	}
@@ -107,6 +112,7 @@ class KakaobankBlogApplicationTests {
 		ResponseEntity<BlogResponseVO> response = 
 				restTemplate.postForEntity(uri.toString(), request, BlogResponseVO.class);
 		//then
+		assertThat(response.getStatusCodeValue(), is(200));
 		assertNotNull(response.getBody());
 		LOGGER.debug("naver search result {}" , response.getBody());
 	}
@@ -119,7 +125,8 @@ class KakaobankBlogApplicationTests {
 		TestRestTemplate restTemplate = new TestRestTemplate();
 		ResponseEntity<KeywordResponseVO> response = 
 				restTemplate.getForEntity(uri.toString(), KeywordResponseVO.class);
-				
+		assertThat(response.getStatusCodeValue(), is(200));
+		assertNotNull(response.getBody());
 		LOGGER.debug("keyword list result {}" , response.getBody());
 	}
 }
